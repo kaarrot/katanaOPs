@@ -20,4 +20,21 @@ public:
 
     static void cook(Foundry::Katana::GeolibCookInterface& interface)
     {
+        std::cerr << "AAAA - COOK" << std::endl;
+        if (interface.atRoot())
+        {
+            interface.setAttr("hello", FnAttribute::StringAttribute("world!"));
+        }
+        interface.stopChildTraversal();
+    }
+};
+
+DEFINE_GEOLIBOP_PLUGIN(HelloWorldOp)
+}  // namespace
+
+void registerPlugins()
+{
+    REGISTER_PLUGIN(HelloWorldOp, "HelloWorld", 1, 2);
+    std::cerr << "AAAA" << std::endl;
         
+}

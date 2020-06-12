@@ -82,3 +82,21 @@ set_target_properties(HelloWorldOp PROPERTIES PREFIX "")
 
 install(TARGETS HelloWorldOp DESTINATION Ops)
 
+
+### CubeMaker
+add_library(CubeMaker MODULE CubeMaker.cpp)
+
+target_link_libraries(CubeMaker
+    PRIVATE
+    Katana::FnAttribute
+    Katana::FnGeolibOpPlugin
+    Katana::FnGeolibServices
+    Katana::pystring
+)
+
+set_target_properties(CubeMaker PROPERTIES PREFIX Ops) # or "" ?
+install(FILES RegisterCubeMakerNode.py DESTINATION Plugins)
+install(TARGETS CubeMaker DESTINATION Ops)
+
+
+

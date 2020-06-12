@@ -1,18 +1,14 @@
 
-# Examples: $HOME/Katana3.5v2/plugins/Src/Ops/RigidBind/src/
-
-
-
+** Build + Run
+#+BEGIN_SRC 
 cmake .. -DCMAKE_INSTALL_PREFIX=../install_dir 
 make install
 export KATANA_RESOURCES=$KATANA_RESOURCES:$HOME/PRJ/katanaOPs/install_dir
 ./katana
+#+END_SRC
 
-
-
-------------------------------
-
-# OpenEXR
+** OpenEXR - quick setup
+#+BEGIN_SRC 
 cd $HOME/PRJ
 git clone https://github.com/kubaroth/openexr-bind.git
 cd openexr-bind
@@ -20,118 +16,43 @@ git checkout develop
 cmake .. -DBUILD_EXR_ONLY=ON
 make 
 
+#+END_SRC
 
 
-# Build Op
+
+** Configure Build with OpenEXR
 #+BEGIN_SRC 
 cmake .. -DCMAKE_INSTALL_PREFIX=../install_dir -DOPENEXR_ROOT=$HOME/PRJ/openexr-bind/install_dir/lib -DOPENEXR_INCLUDE_DIR=$HOME/PRJ/openexr-bind/install_dir/include/ -DOPENEXR_ILMIMF_LIBRARY=$HOME/PRJ/openexr-bind/install_dir/lib/libIlmImf-2_2.so
 #+END_SRC
 
 
-# Run Katana - create install directory and add to KATANA_RESOURCES
-#+BEGIN_SRC 
-mkdir ../install_dir
-export KATANA_RESOURCES=$KATANA_RESOURCES:$HOME/PRJ/katanaOPs/install_dir
-./katana
-import os
-print os.environ['KATANA_RESOURCES']
-#+END_SRC
+** TODO: Fixed search for remaining dependencies
+- tinyxml https://sourceforge.net/projects/tinyxml/
+   - TinyXML
+   - TINYXML_INCLUDE_DIR=
+   - TINYXML_SOURCE_DIR
 
-       
-TODO: add remaiing librarires
-- tinyxml
 - tbb
+   - TBB_INSTALL_DIR
+   - TBBROOT
+   - LIBRARY_PATH
 - Alembic
+   - ALEMBIC_ROOT
 - Boost
 
-
-tinyxml
-https://sourceforge.net/projects/tinyxml/
-
-
-TBB
-# * TBB_INSTALL_DIR
-# * TBBROOT
-# * LIBRARY_PATH
-
-TinyXML
-TINYXML_INCLUDE_DIR=
-TINYXML_SOURCE_DIR
-
-ALEMBIC_ROOT
-
-# find_package(Katana REQUIRED PATH /path/to/katana/plugin_apis/cmake)
-#
-# This will generate CMake targets for each of Katanas plug-in API modules of
-# the form Katana::MODULE_NAME. For example, Katana::FnAttribute.
-#
-# See the CMake projects in $KATANA_ROOT/plugins for sample usage.
-
-
-get_filename_component(KATANA_PLUGINAPIS_DIR
-    "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
-
-find_package(Threads REQUIRED)
-
-# -----------------------------------------------------------------------------
-# Katana::FnAsset
-if (NOT TARGET foundry.katana.FnAsset)
-    add_library(foundry.katana.FnAsset STATIC
-        EXCLUDE_FROM_ALL
-        "${KATANA_PLUGINAPIS_DIR}/src/FnAsset/client/FnDefaultAssetPlugin.cpp"
-        "${KATANA_PLUGINAPIS_DIR}/src/FnAsset/client/FnDefaultFileSequencePlugin.cpp"
-    )
-    set_property(TARGET foundry.katana.FnAsset
-        PROPERTY COMPILE_DEFINITIONS
-        "FNASSET_STATIC"
-    )
-    set_property(TARGET foundry.katana.FnAsset
-        PROPERTY INTERFACE_COMPILE_DEFINITIONS
-        "FNASSET_STATIC"
-    )
-    set_property(TARGET foundry.katana.FnAsset
-        PROPERTY INCLUDE_DIRECTORIES
-        "${KATANA_PLUGINAPIS_DIR}/include"
-    )
-    set_property(TARGET foundry.katana.FnAsset
-        PROPERTY INTERFACE_INCLUDE_DIRECTORIES
-        "${KATANA_PLUGINAPIS_DIR}/include"
-    )
-    set_property(TARGET foundry.katana.FnAsset
-        PROPERTY LINK_LIBRARIES
-        "foundry.katana.FnAttribute"
-        "foundry.katana.FnPluginSystem"
-    )
-    set_property(TARGET foundry.katana.FnAsset
-        PROPERTY INTERFACE_LINK_LIBRARIES
-        "foundry.katana.FnAttribute"
-        "foundry.katana.FnPluginSystem"
-    )
-    set_property(TARGET foundry.katana.FnAsset
-        PROPERTY POSITION_INDEPENDENT_CODE
-        "TRUE"
-    )
-endif ()
-if (NOT TARGET Katana::FnAsset)
-    add_library(Katana::FnAsset ALIAS foundry.katana.FnAsset)
-endif ()
-
-
-==================================================
-
-
-# python
+** python
+#+BEGIN_SRC 
 rootNode = NodegraphAPI.GetRootNode()
 
 NodegraphAPI.CreateNode('PrimitiveCreate', NodegraphAPI.GetRootNode())
 
+#+END_SRC
 
-
+** Other Notes
 
 The cook() function could also be modified to read or set any attribute that you are interested in at a location, or perform a number of other operations.
 
 For more functions that can be used in custom Ops, please see the Katana Developer Guide on the Cook Interface (C++).
-
  
 
 NOTE: The Op runs at all locations by default (as specified by the applyWhere parameter in the GenericOp node), so it will automatically traverse the entire scene graph. In the example above, this results in the testType attribute being set at all locations.
